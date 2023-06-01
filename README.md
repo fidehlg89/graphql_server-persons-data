@@ -8,7 +8,7 @@ cd graphql_server-persons-data
 yarn install
 </pre>
 <pre>
-node index.js
+yarn start
 </pre>
 
 
