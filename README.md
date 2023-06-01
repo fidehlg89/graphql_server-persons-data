@@ -5,7 +5,7 @@ git clone git@github.com:fidehlg89/graphql_server-persons-data.git
 cd graphql_server-persons-data
 </pre>
 <pre>
-yarn install
+yarn install or yarn
 </pre>
 <pre>
 yarn start
