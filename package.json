@@ -1,0 +1,17 @@
+{
+  "name": "graphql-server",
+  "version": "0.0.1",
+  "description": "initial graphql server from scratch",
+  "main": "index.js",
+  "type": "module",
+  "author": "Fidel Ernesto Alonso Ochoa",
+  "license": "MIT",
+  "scripts": {
+    "test": "echo error"
+
+  },
+  "dependencies": {
+    "apollo-server": "^3.12.0",
+    "graphql": "^16.6.0"
+  }
+}
