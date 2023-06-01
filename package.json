@@ -7,11 +7,13 @@
   "author": "Fidel Ernesto Alonso Ochoa",
   "license": "MIT",
   "scripts": {
-    "test": "echo error"
-
+    "test": "echo error",
+    "start": "nodemon index.js"
   },
   "dependencies": {
     "apollo-server": "^3.12.0",
-    "graphql": "^16.6.0"
+    "apollo-server-core": "^3.12.0",
+    "graphql": "^16.6.0",
+    "nodemon": "^2.0.22"
   }
 }

@@ -1,4 +1,5 @@
 import { ApolloServer, gql } from "apollo-server";
+// import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 
 const persons = [
   {
@@ -28,14 +29,19 @@ const typeDefs = gql`
   type Person {
     name: String!
     phone: String
+    address: Address
+    id: ID!
+  }
+
+  type Address {
     street: String!
     city: String!
-    id: ID!
   }
 
   type Query {
     personCount: Int!
     allPersons: [Person]!
+    findPerson(name: String!): Person
   }
 `;
 
@@ -43,12 +49,26 @@ const resolvers = {
   Query: {
     personCount: () => persons.length,
     allPersons: () => persons,
+    findPerson: (root, args) => {
+      const { name } = args;
+      return persons.find((person) => person.name === name);
+    },
+  },
+  Person: {
+    address: (root) => {
+      return {
+        street: root.street,
+        city: root.city,
+      };
+    },
   },
 };
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+//   playground: true,
+//   plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
 });
 
 server.listen().then(({ url }) => {
