@@ -75,7 +75,7 @@ const resolvers = {
   Mutation: {
     addPerson: (root, args) => {
       if (persons.find((p) => p.name === args.name)) {
-        throw new UserInputError("name must be unique", {
+        throw new UserInputError("person name must be unique", {
           invalidArgs: args.name
         });
       }
