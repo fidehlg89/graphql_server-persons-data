@@ -50,6 +50,17 @@ const UPDATE_PERSON = gql`
   }
 `
 
+/**
+ * GraphQL Mutation to delete a person by ID.
+ */
+const DELETE_PERSON = gql`
+  mutation deletePerson($id: ID!) {
+    deletePerson(id: $id) {
+      id
+    }
+  }
+`
+
 function App() {
   // Execute the query to fetch persons
   const { loading, error, data } = useQuery(ALL_PERSONS)
@@ -63,6 +74,10 @@ function App() {
     refetchQueries: [{ query: ALL_PERSONS }]
   })
 
+  const [deletePerson] = useMutation(DELETE_PERSON, {
+    refetchQueries: [{ query: ALL_PERSONS }]
+  })
+
   // Local state for the form fields
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
@@ -72,6 +87,21 @@ function App() {
   // UI state for editing
   const [editMode, setEditMode] = useState(false)
   const [editingId, setEditingId] = useState(null)
+
+  /**
+   * Handles deleting a person with a confirmation prompt.
+   */
+  const handleDelete = async (id, name) => {
+    if (window.confirm(`Are you sure you want to delete ${name}?`)) {
+      try {
+        await deletePerson({ variables: { id } })
+        console.log('🗑️ Person deleted successfully')
+      } catch (err) {
+        console.error("❌ Error deleting:", err.message)
+        alert("Error deleting person")
+      }
+    }
+  }
 
   /**
    * Populate the form to begin editing a person.
@@ -197,6 +227,7 @@ function App() {
                   <h4>{p.name}</h4>
                   <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                     <button onClick={() => startEdit(p)} className="btn-icon">Edit</button>
+                    <button onClick={() => handleDelete(p.id, p.name)} className="btn-icon btn-danger">Delete</button>
                     <span className="id-badge">#{String(p.id).slice(0, 4)}</span>
                   </div>
                 </div>

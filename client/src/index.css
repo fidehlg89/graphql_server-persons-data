@@ -166,6 +166,18 @@ input:focus {
   transform: translateY(-1px);
 }
 
+.btn-danger {
+  background: rgba(244, 63, 94, 0.1);
+  color: #fb7185;
+  border-color: rgba(244, 63, 94, 0.2);
+}
+
+.btn-danger:hover {
+  background: rgba(244, 63, 94, 0.2);
+  color: #fff;
+  border-color: #f43f5e;
+}
+
 .person-list {
   display: flex;
   flex-direction: column;

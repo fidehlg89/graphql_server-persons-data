@@ -72,6 +72,10 @@ const typeDefs = gql`
       street: String
       city: String
     ): Person
+
+    deletePerson(
+      id: ID!
+    ): Person
   }
 `;
 
@@ -123,6 +127,14 @@ const resolvers = {
       persons[index] = updatedPerson
 
       return updatedPerson
+    },
+    deletePerson: (root, args) => {
+      const index = persons.findIndex(p => p.id === args.id)
+      if (index === -1) return null
+      
+      const deletedPerson = persons[index]
+      persons.splice(index, 1) // Remove from array
+      return deletedPerson
     }
   },
 };
