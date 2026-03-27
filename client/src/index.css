@@ -1,0 +1,121 @@
+:root {
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #0f172a; /* Azul muy oscuro para modo oscuro premium */
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.container {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+  background: linear-gradient(to right, #60a5fa, #a855f7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1.5rem;
+}
+
+.card {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: #1e293b;
+  margin: 1rem 0;
+  text-align: left;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+input {
+  padding: 0.8rem;
+  border-radius: 0.5rem;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: white;
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  outline: none;
+  border-color: #60a5fa;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #3b82f6;
+  cursor: pointer;
+  transition: background-color 0.25s, transform 0.1s;
+  color: white;
+}
+
+button:hover {
+  background-color: #2563eb;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+.person-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  background: #334155;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
