@@ -32,42 +32,98 @@ const ADD_PERSON = gql`
   }
 `
 
+/**
+ * GraphQL Mutation to update an existing person record.
+ * Supports updating all fields (name, phone, street, city).
+ */
+const UPDATE_PERSON = gql`
+  mutation updatePerson($id: ID!, $name: String, $phone: String, $street: String, $city: String) {
+    updatePerson(id: $id, name: $name, phone: $phone, street: $street, city: $city) {
+      id
+      name
+      phone
+      address {
+        street
+        city
+      }
+    }
+  }
+`
+
 function App() {
   // Execute the query to fetch persons
   const { loading, error, data } = useQuery(ALL_PERSONS)
   
-  // Setup the mutation to add a new person
-  // We use refetchQueries to automatically update the UI after a successful save
+  // Mutations
   const [addPerson] = useMutation(ADD_PERSON, {
     refetchQueries: [{ query: ALL_PERSONS }]
   })
 
-  // Local state for the "Add Person" form fields
+  const [updatePerson] = useMutation(UPDATE_PERSON, {
+    refetchQueries: [{ query: ALL_PERSONS }]
+  })
+
+  // Local state for the form fields
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [street, setStreet] = useState('')
   const [city, setCity] = useState('')
 
+  // UI state for editing
+  const [editMode, setEditMode] = useState(false)
+  const [editingId, setEditingId] = useState(null)
+
   /**
-   * Handles the form submission to save a new person.
+   * Populate the form to begin editing a person.
+   */
+  const startEdit = (person) => {
+    setEditMode(true)
+    setEditingId(person.id)
+    setName(person.name)
+    setPhone(person.phone || '')
+    setStreet(person.address?.street || '')
+    setCity(person.address?.city || '')
+    
+    // Scroll to form for better UX
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  /**
+   * Reset form and exit edit mode.
+   */
+  const cancelEdit = () => {
+    setEditMode(false)
+    setEditingId(null)
+    setName('')
+    setPhone('')
+    setStreet('')
+    setCity('')
+  }
+
+  /**
+   * Handles the form submission (Add or Update).
    */
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await addPerson({ variables: { name, phone, street, city } })
-      // Reset form fields on success
-      setName('')
-      setPhone('')
-      setStreet('')
-      setCity('')
-      console.log('✅ Person added successfully')
+      if (editMode) {
+        // Update existing person with all fields
+        await updatePerson({ 
+          variables: { id: editingId, name, phone, street, city } 
+        })
+        console.log('✅ Person updated successfully')
+      } else {
+        // Create new person
+        await addPerson({ variables: { name, phone, street, city } })
+        console.log('✅ Person added successfully')
+      }
+      cancelEdit()
     } catch (err) {
-      console.error("❌ Error adding person:", err.message)
+      console.error("❌ Error:", err.message)
       alert("Error: " + err.message)
     }
   }
 
-  // Handle loading and error states for the initial data fetch
   if (loading) return <div className="loading">Checking data...</div>
   if (error) return <div className="error">Oops! {error.message}</div>
 
@@ -79,10 +135,9 @@ function App() {
       </header>
 
       <main className="grid">
-        {/* Left Column: Form to add new persons */}
         <section className="form-section">
           <div className="glass-card">
-            <h3>Register New Person</h3>
+            <h3>{editMode ? `Edit ${name}` : 'Register New Person'}</h3>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label>Full Name</label>
@@ -119,12 +174,20 @@ function App() {
                   required 
                 />
               </div>
-              <button type="submit" className="btn-primary">Save to Database</button>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <button type="submit" className="btn-primary">
+                  {editMode ? 'Update Record' : 'Save to Database'}
+                </button>
+                {editMode && (
+                  <button type="button" onClick={cancelEdit} className="btn-secondary">
+                    Cancel
+                  </button>
+                )}
+              </div>
             </form>
           </div>
         </section>
 
-        {/* Right Column: Dynamic list of persons */}
         <section className="list-section">
           <h3>Current Directory</h3>
           <div className="person-list">
@@ -132,21 +195,24 @@ function App() {
               <article key={p.id} className="glass-card person-item">
                 <div className="person-header">
                   <h4>{p.name}</h4>
-                  <span className="id-badge">#{String(p.id).slice(0, 4)}</span>
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <button onClick={() => startEdit(p)} className="btn-icon">Edit</button>
+                    <span className="id-badge">#{String(p.id).slice(0, 4)}</span>
+                  </div>
                 </div>
                 <div className="person-details">
                   <p><span>📞 Phone:</span> {p.phone || 'N/A'}</p>
-                  <p><span>📍 Address:</span> {p.address ? `${p.address.street}, ${p.address.city}` : 'No address provided'}</p>
+                  <p><span>📍 Address:</span> {p.address ? `${p.address.street}, ${p.address.city}` : 'No address'}</p>
                 </div>
               </article>
             ))}
-            {data?.allPersons?.length === 0 && <p className="empty-msg">No persons found in the database.</p>}
+            {data?.allPersons?.length === 0 && <p className="empty-msg">No persons found.</p>}
           </div>
         </section>
       </main>
 
       <footer>
-        <p>Built with Apollo Client & Vite • Functional & Styled</p>
+        <p>Built with Apollo Client & Vite • CRUD Enabled</p>
       </footer>
     </div>
   )

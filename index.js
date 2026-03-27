@@ -64,6 +64,14 @@ const typeDefs = gql`
       street: String!
       city: String!
     ): Person
+
+    updatePerson(
+      id: ID!
+      name: String
+      phone: String
+      street: String
+      city: String
+    ): Person
   }
 `;
 
@@ -105,6 +113,17 @@ const resolvers = {
       persons.push(person);
       return person;
     },
+    updatePerson: (root, args) => {
+      const { id, ...updates } = args
+      const index = persons.findIndex(p => p.id === id)
+      if (index === -1) return null
+
+      // Merge existing data with updates
+      const updatedPerson = { ...persons[index], ...updates }
+      persons[index] = updatedPerson
+
+      return updatedPerson
+    }
   },
 };
 
